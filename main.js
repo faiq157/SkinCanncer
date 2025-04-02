@@ -208,7 +208,7 @@ function initApp() {
       resultsContent.innerHTML = `
         <div class="bg-red-50 border border-red-200 rounded-lg p-6">
           <h3 class="text-xl font-semibold text-red-800 mb-4">Error</h3>
-          <p class="text-gray-700">An error occurred while analyzing the image. Please try again.</p>
+          <p class="text-gray-700">An error occurred while analyzing the image please make sure you upload skin related image. Please try again.</p>
         </div>
       `;
       resultsSection.classList.remove('hidden');
