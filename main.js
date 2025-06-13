@@ -167,51 +167,53 @@ function initApp() {
   }
 
   // Get class name and definition mapping
-  function getClassInfo(classCode) {
-    const classDefinitions = {
-      akiec: {
-        name: 'Actinic Keratoses (AKIEC)',
-        description:
-          "These are precancerous lesions. It's important to see a dermatologist for evaluation and treatment (e.g., cryotherapy or topical therapies) to prevent progression into squamous cell carcinoma.",
-      },
-      bcc: {
-        name: 'Basal Cell Carcinoma (BCC)',
-        description:
-          'Although BCC rarely metastasizes, it can cause local tissue damage. Consult your dermatologist for assessment and appropriate treatment (such as surgical excision or Mohs surgery) to remove the lesion.',
-      },
-      bkl: {
-        name: 'Benign Keratosis (BKL)',
-        description:
-          'These are usually noncancerous skin growths (like seborrheic keratoses). However, if you notice any changes in appearance, have them checked by a healthcare provider.',
-      },
-      df: {
-        name: 'Dermatofibroma (DF)',
-        description:
-          'Typically benign and not worrisome, but if the lesion changes in size or appearance or becomes symptomatic, consult your doctor for further evaluation.',
-      },
-      nv: {
-        name: 'Melanocytic Nevi (NV)',
-        description:
-          'Common moles that are usually harmless. Monitor them using the ABCDE rule (Asymmetry, Border, Color, Diameter, Evolving) and see a dermatologist if you notice any changes.',
-      },
-      mel: {
-        name: 'Melanoma (MEL)',
-        description:
-          'This is the most dangerous type of skin cancer. If you notice any suspicious changes (irregular moles, multiple colors, rapid growth), seek immediate medical attention for a biopsy and prompt treatment.',
-      },
-      vasc: {
-        name: 'Vascular Skin Lesions (VASC)',
-        description:
-          'Generally benign (such as cherry angiomas), but if the lesion changes or you experience any symptoms, get it evaluated by a dermatologist.',
-      },
-    };
-    return (
-      classDefinitions[classCode] || {
-        name: classCode,
-        description: 'No description available.',
-      }
-    );
-  }
+function getClassInfo(classCode) {
+  const classDefinitions = {
+    akiec: {
+      name: 'Diagnosis: Actinic Keratoses (AKIEC)',
+      description:
+        'A sun-induced, precancerous skin lesion. While early-stage, it can progress to squamous cell carcinoma. Please consult a dermatologist for evaluation and possible treatment.',
+    },
+    bcc: {
+      name: 'Diagnosis: Basal Cell Carcinoma (BCC)',
+      description:
+        'A common, slow-growing skin cancer with low metastatic risk. Early removal improves outcomes—seek prompt assessment by a skin cancer specialist.',
+    },
+    bkl: {
+      name: 'Diagnosis: Benign Keratosis (BKL)',
+      description:
+        'A non-cancerous growth (e.g., seborrheic keratosis). Generally harmless, but consult your healthcare provider if you notice any change in size, shape, or color.',
+    },
+    df: {
+      name: 'Diagnosis: Dermatofibroma (DF)',
+      description:
+        'A benign, fibrous skin nodule. No treatment is usually required—seek medical advice if it becomes painful or shows rapid changes.',
+    },
+    nv: {
+      name: 'Diagnosis: Melanocytic Nevi (NV)',
+      description:
+        'A common, benign mole. Watch for the ABCDE signs (Asymmetry, Border irregularity, Color variation, Diameter >6 mm, Evolving). Consult a dermatologist if you observe any.',
+    },
+    mel: {
+      name: 'Diagnosis: Melanoma (MEL)',
+      description:
+        'A serious, malignant tumor with high metastasis potential. Urgent medical evaluation is recommended—please see a dermatologist immediately.',
+    },
+    vasc: {
+      name: 'Diagnosis: Vascular Skin Lesions (VASC)',
+      description:
+        'A benign blood-vessel growth (e.g., hemangioma). Typically harmless; seek care if it bleeds, enlarges rapidly, or causes discomfort.',
+    },
+  };
+
+  return (
+    classDefinitions[classCode] || {
+      name: classCode,
+      description: 'No description available.',
+    }
+  );
+}
+
 
   // Handle drag and drop
   uploadArea.addEventListener('dragover', (e) => {
@@ -245,15 +247,38 @@ function initApp() {
   });
 
   // Handle file preview
-  function handleFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.src = e.target.result;
-      previewSection.classList.remove('hidden');
-      resultsSection.classList.add('hidden');
-    };
-    reader.readAsDataURL(file);
-  }
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    imagePreview.src = e.target.result;
+    previewSection.classList.remove('hidden');
+    resultsSection.classList.add('hidden');
+    uploadArea.classList.add('hidden');
+
+    if (!document.getElementById('clearImageBtn')) {
+      const clearBtn = document.createElement('button');
+      clearBtn.id = 'clearImageBtn';
+      clearBtn.innerHTML = '✕';
+      clearBtn.className =
+        'absolute top-2 right-2 bg-white rounded-full shadow p-1 text-gray-700 hover:bg-red-100 hover:text-red-600 transition-all z-20';
+      clearBtn.style.position = 'absolute';
+      clearBtn.style.top = '10px';
+      clearBtn.style.right = '10px';
+      clearBtn.title = 'Remove image';
+      const previewContainer = imagePreview.parentElement;
+      previewContainer.style.position = 'relative';
+      previewContainer.appendChild(clearBtn);
+
+      clearBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        previewSection.classList.add('hidden');
+        uploadArea.classList.remove('hidden');
+        clearBtn.remove();
+      });
+    }
+  };
+  reader.readAsDataURL(file);
+}
 
   // Handle analysis
   analyzeBtn.addEventListener('click', async () => {
@@ -327,9 +352,9 @@ function initApp() {
             <svg class="w-6 h-6 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
-            <h3 class="text-lg font-semibold text-yellow-800">Analysis Warning</h3>
+            <h3 class="text-lg font-semibold text-yellow-800">Invalid Image Detected</h3>
           </div>
-          <p class="text-yellow-700">We encountered an issue while analyzing your image. Please ensure your image is clear and try again.</p>
+          <p class="text-yellow-700">⚠️ Invalid Image Detected: Non-medical images are not supported. Please upload a clear skin image for analysis.</p>
         </div>
       `;
     } finally {
