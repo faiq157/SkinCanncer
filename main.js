@@ -299,7 +299,7 @@ function handleFile(file) {
       formData.append('model', 'Efficient Net V7');
 
       const response = await fetch(
-        'https://huggingface.co/spaces/Libert999/ham10000-backend/api/classify',
+        'https://libert999-ham10000-backend.hf.space/',
         {
           method: 'POST',
           body: formData,
